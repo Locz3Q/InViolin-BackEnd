@@ -1,0 +1,26 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Locz3Q/InstrumentallyApp.git"
+  },
+  "author": "BB",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Locz3Q/InstrumentallyApp/issues"
+  },
+  "homepage": "https://github.com/Locz3Q/InstrumentallyApp#readme",
+  "dependencies": {
+    "body-parser": "^1.20.1",
+    "connect-flash": "^0.1.1",
+    "cookie-parser": "^1.4.6",
+    "express": "^4.18.2",
+    "pug": "^3.0.2"
+  }
+}
