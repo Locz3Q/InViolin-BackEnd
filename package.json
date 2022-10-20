@@ -1,26 +1,24 @@
 {
-  "name": "backend",
+  "name": "overment",
   "version": "1.0.0",
   "description": "",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server",
+    "dev": "nodemon server"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Locz3Q/InstrumentallyApp.git"
-  },
-  "author": "BB",
+  "author": "",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/Locz3Q/InstrumentallyApp/issues"
-  },
-  "homepage": "https://github.com/Locz3Q/InstrumentallyApp#readme",
   "dependencies": {
-    "body-parser": "^1.20.1",
+    "body-parser": "^1.18.2",
     "connect-flash": "^0.1.1",
-    "cookie-parser": "^1.4.6",
-    "express": "^4.18.2",
-    "pug": "^3.0.2"
+    "consolidate": "^0.16.0",
+    "cookie-parser": "^1.4.3",
+    "ejs": "^3.1.8",
+    "express": "^4.16.2",
+    "nodemon": "^2.0.20",
+    "pug": "^3.0.2",
+    "swig": "^0.14.0"
   }
 }
