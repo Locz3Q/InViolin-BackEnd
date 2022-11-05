@@ -1,6 +1,11 @@
 const app = require('./app');
+const mongoose = require('mongoose');
 
 app.set('port', process.env.PORT || 5000);
+
+const start = async () => {
+    
+}
 
 const server = app.listen(app.get('port'), () => {
     console.log(`Listening on ${ server.address().port }`);
