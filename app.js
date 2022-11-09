@@ -3,7 +3,7 @@ const path = require('path');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const flash = require('connect-flash');
-const routes = require('./server/routes/index');
+const routes = require('./server/routes/routes');
 
 const app = express();
 const cons = require('consolidate'); 
