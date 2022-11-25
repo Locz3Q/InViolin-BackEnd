@@ -2,6 +2,14 @@ const express = require('express');
 const router = express.Router();
 const Model = require('../../models/model');
 
+router.get('/offGet', async (req, res) => {
+  try {
+    res.json({"users": ["Blazej", "Biskup"]})
+  } catch (error) {
+    res.status(500).json({message: error.message});
+  }
+})
+
 //Post Method
 router.post('/post', async (req, res) => {
   const data = new Model({
