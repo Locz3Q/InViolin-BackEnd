@@ -1,13 +1,13 @@
 require('dotenv').config();
 
-const app = require('./app');
+const app = require('../app');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const mongoString = process.env.DATABASE_URL;
-const routes = require('./server/routes/routes');
+const teachers = require('./routes/teachers');
 
-app.use('/api', routes);
+app.use('/api', teachers);
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(cors());
 app.use(bodyParser.json())
@@ -16,10 +16,6 @@ mongoose.connect(mongoString);
 const database = mongoose.connection;
 
 app.set('port', process.env.PORT || 5000);
-
-const start = async () => {
-    
-}
 
 const server = app.listen(app.get('port'), () => {
     console.log(`Listening on ${ server.address().port }`);
