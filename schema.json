@@ -1,0 +1,285 @@
+{
+  "fields": [
+    {
+      "name": "_id",
+      "path": "_id",
+      "count": 5,
+      "types": [
+        {
+          "name": "ObjectID",
+          "bsonType": "ObjectID",
+          "path": "_id",
+          "count": 5,
+          "values": [
+            "6383a0ec1db829e790205455",
+            "63893c6fb6344289a07cfbf1",
+            "638921730823ddb03085c628",
+            "63893c69b6344289a07cfbee",
+            "63892a4e703e42d2741dc93d"
+          ],
+          "total_count": 0,
+          "probability": 1,
+          "unique": 5,
+          "has_duplicates": false
+        }
+      ],
+      "total_count": 5,
+      "type": "ObjectID",
+      "has_duplicates": false,
+      "probability": 1
+    },
+    {
+      "name": "__v",
+      "path": "__v",
+      "count": 5,
+      "types": [
+        {
+          "name": "Int32",
+          "bsonType": "Int32",
+          "path": "__v",
+          "count": 5,
+          "values": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "total_count": 0,
+          "probability": 1,
+          "unique": 1,
+          "has_duplicates": true
+        }
+      ],
+      "total_count": 5,
+      "type": "Int32",
+      "has_duplicates": true,
+      "probability": 1
+    },
+    {
+      "name": "createdAt",
+      "path": "createdAt",
+      "count": 5,
+      "types": [
+        {
+          "name": "Date",
+          "bsonType": "Date",
+          "path": "createdAt",
+          "count": 5,
+          "values": [
+            "2022-11-27T17:39:56.099Z",
+            "2022-12-01T23:44:47.379Z",
+            "2022-12-01T21:49:39.298Z",
+            "2022-12-01T23:44:41.707Z",
+            "2022-12-01T22:27:26.483Z"
+          ],
+          "total_count": 0,
+          "probability": 1,
+          "unique": 5,
+          "has_duplicates": false
+        }
+      ],
+      "total_count": 5,
+      "type": "Date",
+      "has_duplicates": false,
+      "probability": 1
+    },
+    {
+      "name": "email",
+      "path": "email",
+      "count": 5,
+      "types": [
+        {
+          "name": "String",
+          "bsonType": "String",
+          "path": "email",
+          "count": 5,
+          "values": [
+            "sdasd",
+            "sdaadsdsa",
+            "sdaasd",
+            "sdaasdsa",
+            "sdaasda"
+          ],
+          "total_count": 0,
+          "probability": 1,
+          "unique": 5,
+          "has_duplicates": false
+        }
+      ],
+      "total_count": 5,
+      "type": "String",
+      "has_duplicates": false,
+      "probability": 1
+    },
+    {
+      "name": "name",
+      "path": "name",
+      "count": 5,
+      "types": [
+        {
+          "name": "String",
+          "bsonType": "String",
+          "path": "name",
+          "count": 5,
+          "values": [
+            "Błażej",
+            "Błażej",
+            "Błażej",
+            "Błażej",
+            "Błażej"
+          ],
+          "total_count": 0,
+          "probability": 1,
+          "unique": 1,
+          "has_duplicates": true
+        }
+      ],
+      "total_count": 5,
+      "type": "String",
+      "has_duplicates": true,
+      "probability": 1
+    },
+    {
+      "name": "password",
+      "path": "password",
+      "count": 5,
+      "types": [
+        {
+          "name": "String",
+          "bsonType": "String",
+          "path": "password",
+          "count": 5,
+          "values": [
+            "sda",
+            "$2b$10$1F94JRpSvG7NPSItD2VHKucwLVHnD48xvgnmd0/iHP4jYojsDmiyG",
+            "sda",
+            "$2b$10$b6pq2vpidw30.J8ilf6/keOo8bYePYybets3JNHAP4ZxJFPWEv.JS",
+            "$2b$10$vYlwL/YujxOsU8ssLxhaOOVD2JbzsIal7oVvVtjCH3nSrI5hdWjHa"
+          ],
+          "total_count": 0,
+          "probability": 1,
+          "unique": 4,
+          "has_duplicates": true
+        }
+      ],
+      "total_count": 5,
+      "type": "String",
+      "has_duplicates": true,
+      "probability": 1
+    },
+    {
+      "name": "surname",
+      "path": "surname",
+      "count": 5,
+      "types": [
+        {
+          "name": "String",
+          "bsonType": "String",
+          "path": "surname",
+          "count": 5,
+          "values": [
+            "Biskup",
+            "Biskup",
+            "Biskup",
+            "Biskup",
+            "Biskup"
+          ],
+          "total_count": 0,
+          "probability": 1,
+          "unique": 1,
+          "has_duplicates": true
+        }
+      ],
+      "total_count": 5,
+      "type": "String",
+      "has_duplicates": true,
+      "probability": 1
+    },
+    {
+      "name": "teach_level",
+      "path": "teach_level",
+      "count": 5,
+      "types": [
+        {
+          "name": "Int32",
+          "bsonType": "Int32",
+          "path": "teach_level",
+          "count": 5,
+          "values": [
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "total_count": 0,
+          "probability": 1,
+          "unique": 1,
+          "has_duplicates": true
+        }
+      ],
+      "total_count": 5,
+      "type": "Int32",
+      "has_duplicates": true,
+      "probability": 1
+    },
+    {
+      "name": "updatedAt",
+      "path": "updatedAt",
+      "count": 5,
+      "types": [
+        {
+          "name": "Date",
+          "bsonType": "Date",
+          "path": "updatedAt",
+          "count": 5,
+          "values": [
+            "2022-11-27T17:39:56.099Z",
+            "2022-12-01T23:44:47.379Z",
+            "2022-12-01T21:49:39.298Z",
+            "2022-12-01T23:44:41.707Z",
+            "2022-12-01T22:27:26.483Z"
+          ],
+          "total_count": 0,
+          "probability": 1,
+          "unique": 5,
+          "has_duplicates": false
+        }
+      ],
+      "total_count": 5,
+      "type": "Date",
+      "has_duplicates": false,
+      "probability": 1
+    },
+    {
+      "name": "username",
+      "path": "username",
+      "count": 5,
+      "types": [
+        {
+          "name": "String",
+          "bsonType": "String",
+          "path": "username",
+          "count": 5,
+          "values": [
+            "bbb",
+            "sda",
+            "bbb",
+            "sda",
+            "sda"
+          ],
+          "total_count": 0,
+          "probability": 1,
+          "unique": 2,
+          "has_duplicates": true
+        }
+      ],
+      "total_count": 5,
+      "type": "String",
+      "has_duplicates": true,
+      "probability": 1
+    }
+  ],
+  "count": 5
+}

@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 
 const student = new mongoose.Schema({
   email: {
@@ -8,6 +9,10 @@ const student = new mongoose.Schema({
   username: {
     require:  true,
     type: String
+  },
+  teacher: {
+    type: Schema.Types.ObjectId,
+    ref: "teacher"
   },
   password: {
     require:  true,
