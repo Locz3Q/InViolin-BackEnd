@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt')
+const validator = require('express-validator')
 const Schema = mongoose.Schema;
 
 const teacher = new mongoose.Schema({
@@ -12,14 +13,14 @@ const teacher = new mongoose.Schema({
     require:  true,
     type: String
   },
-  students: [{
-    type: Schema.Types.ObjectId,
-    ref: "Student"
-  }],
   password: {
     require:  true,
     type: String
   },
+  students: [{
+    type: Schema.Types.ObjectId,
+    ref: "Student"
+  }],
   name: {
     required: true,
     type: String
@@ -34,7 +35,17 @@ const teacher = new mongoose.Schema({
   }
 }, {timestamps: true})
 
-teacher.statics.signup = async function(email, password, username, name, surname, teach_level) {
+teacher.statics.signup = async function(email, username, password, name, surname, teach_level) {
+  if (!email || !password) {
+    throw Error('Wszystkie pola muszą być wypełnione');
+  }
+  // if (!validator.isEmail(email)) {
+  //   throw Error('Błędny email');
+  // }
+  // if (!validator.isStrongPassword(password)) {
+  //   throw Error('Hasło za słabe');
+  // }
+  
   const exists = await this.findOne({ email });
 
   if(exists) {

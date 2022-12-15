@@ -1,6 +1,8 @@
+
+
 const TeacherModel = require('../server/models/teacher');
 const StudentModel = require('../server/models/student');
-
+const asyncHandler = require('express-async-handler');
 // login teacher
 const loginTeacher = async (req, res) => {
   res.json({msg: "login teacher"})
@@ -27,4 +29,37 @@ const signupTeacher = async (req, res) => {
   }
 }
 
-module.exports = {loginTeacher, signupTeacher}
+const getAllTechers = async (req, res) => {
+  try {
+    const data = await TeacherModel.find();
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({message: error.message});
+  }
+}
+
+const updateTeacherData = asyncHandler(async (req, res) => {
+  const Teacher = await TeacherModel.findById(req.params.id);
+  if(!Teacher) {
+    res.status(400);
+    throw new Error('Nie ma takiego nauczyciela');
+  }
+  try{
+    const updatedTeacher = await TeacherModel.findByIdAndUpdate(req.params.id, req.body, {new: false});
+    res.status(200).json(updatedTeacher);
+  } catch (error) {
+    res.status(500).json({message: error.message});
+  }
+})
+
+const deleteTeacher = asyncHandler(async (req, res) => {
+  try {
+    const id = req.params.id;
+    const dataToDelete = await TeacherModel.findByIdAndDelete(id);
+    res.send(`Document with ${dataToDelete.name} has been deleted..`)
+  } catch(error) {
+    res.status(400).json({message: error.message});
+  }
+})
+
+module.exports = {loginTeacher, signupTeacher, getAllTechers, updateTeacherData, deleteTeacher}
