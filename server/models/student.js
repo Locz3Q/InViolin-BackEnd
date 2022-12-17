@@ -4,19 +4,20 @@ const Schema = mongoose.Schema;
 const student = new mongoose.Schema({
   email: {
     require:  true,
-    type: String
+    type: String,
+    unique: true
   },
   username: {
     require:  true,
     type: String
   },
-  teacher: {
-    type: Schema.Types.ObjectId,
-    ref: "teacher"
-  },
   password: {
     require:  true,
     type: String
+  },
+  teacher: {
+    type: Schema.Types.ObjectId,
+    ref: "Teachers"
   },
   name: {
     required: true,

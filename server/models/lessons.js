@@ -4,11 +4,13 @@ const Schema = mongoose.Schema;
 const lessonSchema = new mongoose.Schema({
   student: {
     type: Schema.Types.ObjectId,
-    require: true
+    require: true,
+    ref: "Students"
   },
   teacher: {
     type: Schema.Types.ObjectId,
-    require: true
+    require: true,
+    ref: "Teachers"
   },
   date: {
     type: Schema.Types.Date,

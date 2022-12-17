@@ -1,7 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const StudentModel = require('../models/student');
-const { loginTeacher, signupTeacher } = require('../../controllers/teacherController');
+const { registerStudent, loginStudent, getMe } = require('../../controllers/studentController');
+const { protect } = require('../../middleware/authMiddleware')
 
 router.get('/offGet', async (req, res) => {
   try {
@@ -10,6 +11,12 @@ router.get('/offGet', async (req, res) => {
     res.status(500).json({message: error.message});
   }
 })
+
+router.post('/signup', registerStudent);
+
+router.post('/signin', loginStudent);
+
+router.get('/me', protect, getMe);
 
 //Post Method
 router.post('/post', async (req, res) => {
