@@ -1,4 +1,5 @@
 const StudentModel = require('../server/models/student');
+const TeacherModel = require('../server/models/teacher');
 const asyncHandler = require('express-async-handler');
 const bcrypt = require('bcrypt');
 const {hashPassword} = require('./encodeController');
@@ -6,12 +7,22 @@ const jwt = require('jsonwebtoken');
 
 const registerStudent = asyncHandler(async (req, res) => {
   try {
-    const { email, username, password, name, surname, level } = req.body;
+    const { email, username, password, name, surname, level, isTeacher } = req.body;
 
     if(!email || !username || !password || !name || !surname || !level) {
       res.status(400);
       throw new Error('Please fill all fields');
     }
+
+    const userExist = (await StudentModel.findOne({ email }) 
+                        || await StudentModel.findOne({ username })
+                        || await TeacherModel.findOne({ email })
+                        || await TeacherModel.findOne({ username }));
+
+    if(userExist) {
+      res.status(400);
+      throw new Error('User already exists');
+    };
 
     const hashedPassword = await hashPassword(password);
     
@@ -21,8 +32,9 @@ const registerStudent = asyncHandler(async (req, res) => {
       password: hashedPassword,
       name,
       surname,
-      level
-    })
+      level,
+      isTeacher
+    });
 
     if(student) {
       res.status(201).json({
@@ -31,11 +43,12 @@ const registerStudent = asyncHandler(async (req, res) => {
         name: student.name,
         surname: student.surname,
         level: student.level,
-        token: generateToken(student._id)
+        token: generateToken(student._id),
+        isTeacher: student.isTeacher
       });
     } else {
-      res.status(400)
-      throw new Error('Invalid user data')
+      res.status(400);
+      throw new Error('Invalid user data');
     }
   } catch (error) {
     res.status(400).json({message: error.message});
@@ -53,11 +66,12 @@ const loginStudent = asyncHandler(async (req, res) => {
         name: student.name,
         surname: student.surname,
         level: student.level,
-        token: generateToken(student._id)
-      })
+        token: generateToken(student._id),
+        isTeacher: student.isTeacher
+      });
     } else {
-      res.status(400)
-      throw new Error('Invalid credentials')
+      res.status(400);
+      throw new Error('Invalid credentials');
     }
   } catch (error) {
     throw new Error(error);

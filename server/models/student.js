@@ -9,7 +9,8 @@ const student = new mongoose.Schema({
   },
   username: {
     require:  true,
-    type: String
+    type: String,
+    unique: true
   },
   password: {
     require:  true,
@@ -28,9 +29,18 @@ const student = new mongoose.Schema({
     type: String
   },
   level: {
-    required: false,
+    required: true,
     type: Number
-  }
+  },
+  isTeacher: {
+    required: true,
+    type: Boolean
+  },
+  lessons: [{
+    required: false,
+    type: Schema.Types.ObjectId,
+    ref: "Lessons"
+  }]
 }, {timestamps: true})
 
 module.exports = mongoose.model('Students', student);

@@ -1,65 +1,101 @@
-
-
 const TeacherModel = require('../server/models/teacher');
 const StudentModel = require('../server/models/student');
 const asyncHandler = require('express-async-handler');
-// login teacher
-const loginTeacher = async (req, res) => {
-  res.json({msg: "login teacher"})
-}
+const bcrypt = require('bcrypt');
+const {hashPassword} = require('./encodeController');
+const jwt = require('jsonwebtoken');
 
-// signup teacher
-const signupTeacher = async (req, res) => {
-  const {email, username, password, name, surname, teach_level} = req.body;
-  // const data = new TeacherModel({
-  //   email: req.body.email,
-  //   username: req.body.username,
-  //   password: req.body.password,
-  //   name: req.body.name,
-  //   surname: req.body.surname,
-  //   teach_level: req.body.teach_level
-  // });
-  try{
-    const teacher = await TeacherModel.signup(email, username, password, name, surname, teach_level);
-    // const dataToSave = await data.save();
-    res.status(200).json(teacher);
-  }
-  catch(error){
+const registerTeacher = asyncHandler(async (req, res) => {
+  try {
+    const { email, username, password, name, surname, level, isTeacher } = req.body;
+
+    if(!email || !username || !password || !name || !surname || !level) {
+      res.status(400);
+      throw new Error('Please fill all fields');
+    }
+
+    const userExist = (await StudentModel.findOne({ email }) 
+                        || await StudentModel.findOne({ username })
+                        || await TeacherModel.findOne({ email })
+                        || await TeacherModel.findOne({ username }));
+
+    if(userExist) {
+      res.status(400);
+      throw new Error('User already exists');
+    };
+
+    const hashedPassword = await hashPassword(password);
+    
+    const teacher = await TeacherModel.create({
+      email,
+      username,
+      password: hashedPassword,
+      name,
+      surname,
+      level,
+      isTeacher
+    })
+
+    if(teacher) {
+      res.status(201).json({
+        email: teacher.email,
+        username: teacher.username,
+        name: teacher.name,
+        surname: teacher.surname,
+        level: teacher.level,
+        token: generateToken(teacher._id),
+        isTeacher: teacher.isTeacher
+      });
+    } else {
+      res.status(400)
+      throw new Error('Invalid user data')
+    }
+  } catch (error) {
     res.status(400).json({message: error.message});
   }
-}
+})
 
-const getAllTechers = async (req, res) => {
+const loginTeacher = asyncHandler(async (req, res) => {
+  try{
+    const {username, password} = req.body;
+    const teacher = await TeacherModel.findOne({username});
+    if(teacher && (await bcrypt.compare(password, teacher.password))) {
+      res.json({
+        email: teacher.email,
+        username: teacher.username,
+        name: teacher.name,
+        surname: teacher.surname,
+        level: teacher.level,
+        token: generateToken(teacher._id),
+        isTeacher: teacher.isTeacher
+      })
+    } else {
+      res.status(400)
+      throw new Error('Invalid credentials')
+    }
+  } catch (error) {
+    throw new Error(error);
+  }
+})
+
+const getMe = asyncHandler(async (req, res) => {
+  res.status(200).json(req.user);
+})
+
+const getAll = asyncHandler(async (req, res) => {
   try {
     const data = await TeacherModel.find();
-    res.json(data);
+    res.status(200).json(data);
   } catch (error) {
     res.status(500).json({message: error.message});
   }
+})
+
+const generateToken = (id) => {
+  return jwt.sign({id}, process.env.JWT_SECRET, {
+    expiresIn: '30d',
+  });
 }
 
-const updateTeacherData = asyncHandler(async (req, res) => {
-  const Teacher = await TeacherModel.findById(req.params.id);
-  if(!Teacher) {
-    res.status(400);
-    throw new Error('Nie ma takiego nauczyciela');
-  }
-  try{
-    const updatedTeacher = await TeacherModel.findByIdAndUpdate(req.params.id, req.body, {new: false});
-    res.status(200).json(updatedTeacher);
-  } catch (error) {
-    res.status(500).json({message: error.message});
-  }
-})
 
-const deleteTeacher = asyncHandler(async (req, res) => {
-  try {
-    const id = req.params.id;
-    const dataToDelete = await TeacherModel.findByIdAndDelete(id);
-    res.send(`Document with ${dataToDelete.name} has been deleted..`)
-  } catch(error) {
-    res.status(400).json({message: error.message});
-  }
-})
-
-module.exports = {loginTeacher, signupTeacher, getAllTechers, updateTeacherData, deleteTeacher}
+module.exports = { registerTeacher, loginTeacher, getMe, getAll };
