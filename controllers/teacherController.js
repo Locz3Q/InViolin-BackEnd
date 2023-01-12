@@ -68,10 +68,10 @@ const loginTeacher = asyncHandler(async (req, res) => {
         level: teacher.level,
         token: generateToken(teacher._id),
         isTeacher: teacher.isTeacher
-      })
+      });
     } else {
-      res.status(400)
-      throw new Error('Invalid credentials')
+      res.json({login: false});
+      throw new Error('Invalid credentials');
     }
   } catch (error) {
     throw new Error(error);
@@ -91,6 +91,23 @@ const getAll = asyncHandler(async (req, res) => {
   }
 })
 
+const getByUsername = asyncHandler(async (req, res) => {
+  try {
+    const {username} = req.body;
+    console.log(username);
+    const data = await TeacherModel.findOne({username});
+    //console.log(data);
+    if(data) {
+      res.status(200).json({success: true});
+    }
+    else {
+      res.status(200).json({success: false});
+    }
+  } catch (error) {
+    res.status(500).json({message: error.message});
+  }
+})
+
 const generateToken = (id) => {
   return jwt.sign({id}, process.env.JWT_SECRET, {
     expiresIn: '30d',
@@ -98,4 +115,4 @@ const generateToken = (id) => {
 }
 
 
-module.exports = { registerTeacher, loginTeacher, getMe, getAll };
+module.exports = { registerTeacher, loginTeacher, getMe, getAll, getByUsername };
