@@ -7,9 +7,11 @@ const bodyParser = require('body-parser');
 const mongoString = process.env.DATABASE_URI;
 const teachersRoutes = require('./routes/teachers');
 const studentsRoutes = require('./routes/students');
+const queueRoutes = require('./routes/queue');
 
 app.use('/api/teachers', teachersRoutes);
 app.use('/api/students', studentsRoutes);
+app.use('/api/queue', queueRoutes);
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(cors());
 app.use(bodyParser.json())

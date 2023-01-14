@@ -1,22 +1,16 @@
 const express = require('express');
 const router = express.Router();
 const StudentModel = require('../models/student');
-const { registerStudent, loginStudent, getMe } = require('../../controllers/studentController');
+const { registerStudent, loginStudent, getMe, addTeacher } = require('../../controllers/studentController');
 const { protect } = require('../../middleware/authMiddleware')
-
-router.get('/offGet', async (req, res) => {
-  try {
-    res.json({"users": ["Blazej", "Biskup"]})
-  } catch (error) {
-    res.status(500).json({message: error.message});
-  }
-})
 
 router.post('/signup', registerStudent);
 
 router.post('/signin', loginStudent);
 
 router.get('/me', protect, getMe);
+
+router.put('/addTeacher/:id', addTeacher);
 
 //Post Method
 router.post('/post', async (req, res) => {

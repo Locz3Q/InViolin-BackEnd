@@ -108,6 +108,42 @@ const getByUsername = asyncHandler(async (req, res) => {
   }
 })
 
+const pushStudent = asyncHandler(async (req, res) => {
+  try {
+    const {studentId, teacherId} = req.body;
+
+    if(!studentId) {
+      res.status(400);
+      throw new Error('Podaj ID studenta');
+    }
+
+    if(!teacherId) {
+      res.status(400);
+      throw new Error('Zaloguj się');
+    }
+
+    const studentExist = await StudentModel.findById(studentId);
+
+    if(!studentExist) {
+      res.status(400);
+      throw new Error('Student o podanym ID nie istnieje');
+    }
+
+    const data = await TeacherModel.findOneAndUpdate(
+      { _id: teacherId, students: { $ne: studentId } },
+      { $push: { students: studentId } },
+      { new: true }
+    );
+    if(!data) {
+      res.status(400);
+      throw new Error('Student jest już zapisany u nauczyciela');
+    }
+    res.json({ message: 'Dodano studenta' });
+  } catch (error) {
+    res.status(500).json({message: error.message});
+  }
+})
+
 const generateToken = (id) => {
   return jwt.sign({id}, process.env.JWT_SECRET, {
     expiresIn: '30d',
@@ -115,4 +151,4 @@ const generateToken = (id) => {
 }
 
 
-module.exports = { registerTeacher, loginTeacher, getMe, getAll, getByUsername };
+module.exports = { registerTeacher, loginTeacher, getMe, getAll, getByUsername, pushStudent };

@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const TeacherModel = require('../models/teacher');
-const { registerTeacher, loginTeacher, getMe, getAll, getByUsername } = require('../../controllers/teacherController');
+const { registerTeacher, loginTeacher, getMe, getAll, getByUsername, pushStudent } = require('../../controllers/teacherController');
 const { protectTeacher } = require('../../middleware/authMiddleware')
 
 router.get('/offGet', async (req, res) => {
@@ -21,6 +21,8 @@ router.get('/me', protectTeacher, getMe);
 router.get('/', getAll);
 
 router.post('/getTeacher', getByUsername);
+
+router.post('/addStudent', pushStudent)
 //Post Method
 router.post('/post', async (req, res) => {
   const data = new TeacherModel({
