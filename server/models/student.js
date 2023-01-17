@@ -40,7 +40,8 @@ const student = new mongoose.Schema({
   lessons: [{
     required: false,
     type: Schema.Types.ObjectId,
-    ref: "Lessons"
+    ref: "Lessons",
+    default: null
   }]
 }, {timestamps: true})
 

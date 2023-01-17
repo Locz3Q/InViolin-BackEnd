@@ -2,17 +2,23 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const queue = new Schema({
-  user: {
+  student: {
     require: true,
     type: Schema.Types.ObjectId,
-    ref: "Teachers" || "Students"
+    ref: "Students"
+  },
+  teacher: {
+    require: true,
+    type: Schema.Types.ObjectId,
+    ref: "Teachers"
   },
   context: {
     require: true,
     type: String
   },
-  toApprove: {
+  approve: {
     require: true,
+    default: undefined,
     type: Boolean
   }
 }, {timestamps: true})

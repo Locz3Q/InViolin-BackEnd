@@ -18,7 +18,9 @@ const teacher = new mongoose.Schema({
   },
   students: [{
     type: Schema.Types.ObjectId,
-    ref: "Students"
+    ref: "Students",
+    require: true,
+    default: null
   }],
   name: {
     required: true,

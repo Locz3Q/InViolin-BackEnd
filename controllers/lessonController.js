@@ -14,7 +14,8 @@ const addLesson = asyncHandler(async (req, res) => {
   try {
     const {teacher, student, date, isRemote} = req.body;
     if(!teacher || !student || !date) {
-      
+      res.status(400);
+      throw new Error('Please fill all fields');
     }
   } catch (error) {
     res.status(500).json({message: error.message});

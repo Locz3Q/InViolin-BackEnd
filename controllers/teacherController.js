@@ -11,7 +11,7 @@ const registerTeacher = asyncHandler(async (req, res) => {
 
     if(!email || !username || !password || !name || !surname || !level) {
       res.status(400);
-      throw new Error('Please fill all fields');
+      throw new Error('Wypełnij wszystkie pola!');
     }
 
     const userExist = (await StudentModel.findOne({ email }) 
@@ -21,7 +21,7 @@ const registerTeacher = asyncHandler(async (req, res) => {
 
     if(userExist) {
       res.status(400);
-      throw new Error('User already exists');
+      throw new Error('Użytkownik o takim emailu lub nazwie lub istnieje');
     };
 
     const hashedPassword = await hashPassword(password);
@@ -33,22 +33,27 @@ const registerTeacher = asyncHandler(async (req, res) => {
       name,
       surname,
       level,
-      isTeacher
+      isTeacher,
+      students: [],
+      lessons: []
     })
 
     if(teacher) {
       res.status(201).json({
+        _id: teacher.id,
         email: teacher.email,
         username: teacher.username,
         name: teacher.name,
         surname: teacher.surname,
         level: teacher.level,
         token: generateToken(teacher._id),
-        isTeacher: teacher.isTeacher
+        isTeacher: teacher.isTeacher,
+        students: [],
+        lessons: []
       });
     } else {
       res.status(400)
-      throw new Error('Invalid user data')
+      throw new Error('Coś poszło nie tak')
     }
   } catch (error) {
     res.status(400).json({message: error.message});
@@ -61,17 +66,19 @@ const loginTeacher = asyncHandler(async (req, res) => {
     const teacher = await TeacherModel.findOne({username});
     if(teacher && (await bcrypt.compare(password, teacher.password))) {
       res.json({
+        _id: teacher.id,
         email: teacher.email,
         username: teacher.username,
         name: teacher.name,
         surname: teacher.surname,
         level: teacher.level,
         token: generateToken(teacher._id),
-        isTeacher: teacher.isTeacher
+        isTeacher: teacher.isTeacher,
+        students: teacher.students
       });
     } else {
-      res.json({login: false});
-      throw new Error('Invalid credentials');
+      res.status(400)
+      throw new Error('Niepoprawna nazwa użytkownika lub hasło');
     }
   } catch (error) {
     throw new Error(error);
@@ -79,12 +86,19 @@ const loginTeacher = asyncHandler(async (req, res) => {
 })
 
 const getMe = asyncHandler(async (req, res) => {
-  res.status(200).json(req.user);
+  try {
+    const data = await TeacherModel.findById(req.user.id, '-password').lean();
+    const token = req.headers.authorization.split(' ')[1];
+    const concatData = { ...data, token};
+    res.status(200).json(concatData);
+  } catch (error) {
+    res.status(500).json({message: error.message});
+  }
 })
 
 const getAll = asyncHandler(async (req, res) => {
   try {
-    const data = await TeacherModel.find();
+    const data = await TeacherModel.find({}, '-password');
     res.status(200).json(data);
   } catch (error) {
     res.status(500).json({message: error.message});
@@ -94,9 +108,7 @@ const getAll = asyncHandler(async (req, res) => {
 const getByUsername = asyncHandler(async (req, res) => {
   try {
     const {username} = req.body;
-    console.log(username);
     const data = await TeacherModel.findOne({username});
-    //console.log(data);
     if(data) {
       res.status(200).json({success: true});
     }
@@ -108,9 +120,20 @@ const getByUsername = asyncHandler(async (req, res) => {
   }
 })
 
+const getbyID = asyncHandler(async (req, res) => {
+  try {
+    const ID = req.params.id;
+    const data = await TeacherModel.findById(ID, '-password -students');
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({message: error.message});
+  }
+})
+
 const pushStudent = asyncHandler(async (req, res) => {
   try {
-    const {studentId, teacherId} = req.body;
+    const {studentId} = req.body;
+    const teacherId = req.params.id
 
     if(!studentId) {
       res.status(400);
@@ -122,13 +145,16 @@ const pushStudent = asyncHandler(async (req, res) => {
       throw new Error('Zaloguj się');
     }
 
-    const studentExist = await StudentModel.findById(studentId);
-
-    if(!studentExist) {
+    const existingStudent = await StudentModel.findById(studentId);
+    if(!existingStudent) {
       res.status(400);
-      throw new Error('Student o podanym ID nie istnieje');
+      throw new Error('Student nie istnieje');
     }
-
+    // if(existingStudent.teacher) {
+    //   res.status(400);
+    //   throw new Error('Student ma już nauczyciela');
+    // }
+  
     const data = await TeacherModel.findOneAndUpdate(
       { _id: teacherId, students: { $ne: studentId } },
       { $push: { students: studentId } },
@@ -138,7 +164,8 @@ const pushStudent = asyncHandler(async (req, res) => {
       res.status(400);
       throw new Error('Student jest już zapisany u nauczyciela');
     }
-    res.json({ message: 'Dodano studenta' });
+    const dataToRes = await TeacherModel.findById(teacherId);
+    res.status(200).json(dataToRes.students);
   } catch (error) {
     res.status(500).json({message: error.message});
   }
@@ -151,4 +178,4 @@ const generateToken = (id) => {
 }
 
 
-module.exports = { registerTeacher, loginTeacher, getMe, getAll, getByUsername, pushStudent };
+module.exports = { registerTeacher, loginTeacher, getMe, getAll, getByUsername, pushStudent, getbyID };

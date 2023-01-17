@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const StudentModel = require('../models/student');
-const { registerStudent, loginStudent, getMe, addTeacher } = require('../../controllers/studentController');
+const { registerStudent, loginStudent, getMe, addTeacher, getStudentsByID } = require('../../controllers/studentController');
 const { protect } = require('../../middleware/authMiddleware')
 
 router.post('/signup', registerStudent);
@@ -9,6 +9,8 @@ router.post('/signup', registerStudent);
 router.post('/signin', loginStudent);
 
 router.get('/me', protect, getMe);
+
+router.get('/', getStudentsByID)
 
 router.put('/addTeacher/:id', addTeacher);
 
@@ -38,14 +40,6 @@ router.get('/getAll', async (req, res) => {
 })
 
 //Get by ID Method
-router.get('/getOne/:id', async (req, res) => {
-  try {
-    const data = await StudentModel.findById(req.params.id);
-    res.json(data);
-  } catch (error) {
-    res.status(500).json({message: error.message});
-  }
-})
 
 //Update by ID Method
 router.patch('/update/:id', async (req, res) => {

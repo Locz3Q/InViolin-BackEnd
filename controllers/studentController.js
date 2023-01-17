@@ -7,11 +7,11 @@ const jwt = require('jsonwebtoken');
 
 const registerStudent = asyncHandler(async (req, res) => {
   try {
-    const { email, username, password, name, surname, level, isTeacher } = req.body;
+    const { email, username, password, name, surname, level, isTeacher, teacher } = req.body;
     
     if(!email || !username || !password || !name || !surname || !level) {
       res.status(400);
-      throw new Error('Please fill all fields');
+      throw new Error('Wypełnij wszystkie pola!');
     }
 
     const userExist = (await StudentModel.findOne({ email }) 
@@ -21,7 +21,7 @@ const registerStudent = asyncHandler(async (req, res) => {
 
     if(userExist) {
       res.status(400);
-      throw new Error('User already exists');
+      throw new Error('Użytkownik o takim emailu lub nazwie lub istnieje');
     };
 
     const hashedPassword = await hashPassword(password);
@@ -33,22 +33,27 @@ const registerStudent = asyncHandler(async (req, res) => {
       name,
       surname,
       level,
-      isTeacher
+      isTeacher,
+      teacher: null,
+      lessons: []
     });
 
     if(student) {
       res.status(201).json({
+        _id: student.id,
         email: student.email,
         username: student.username,
         name: student.name,
         surname: student.surname,
         level: student.level,
         token: generateToken(student._id),
-        isTeacher: student.isTeacher
+        isTeacher: student.isTeacher,
+        lessons: [],
+        teacher: null
       });
     } else {
       res.status(400);
-      throw new Error('Invalid user data');
+      throw new Error('Niepoprawna nazwa użytkownika lub hasło');
     }
   } catch (error) {
     res.status(400).json({message: error.message});
@@ -61,17 +66,19 @@ const loginStudent = asyncHandler(async (req, res) => {
     const student = await StudentModel.findOne({username});
     if(student && (await bcrypt.compare(password, student.password))) {
       res.json({
+        _id: student.id,
         email: student.email,
         username: student.username,
         name: student.name,
         surname: student.surname,
         level: student.level,
         token: generateToken(student._id),
-        isTeacher: student.isTeacher
+        isTeacher: student.isTeacher,
+        teacher: student.teacher
       });
     } else {
       res.status(400);
-      throw new Error('Invalid credentials');
+      throw new Error('Niepoprawna nazwa użytkownika lub hasło');
     }
   } catch (error) {
     throw new Error(error);
@@ -79,25 +86,31 @@ const loginStudent = asyncHandler(async (req, res) => {
 })
 
 const getMe = asyncHandler(async (req, res) => {
-  res.status(200).json(req.user);
+  try {
+    const data = await StudentModel.findById(req.user.id, '-password').lean();
+    const token = req.headers.authorization.split(' ')[1];
+    const concatData = { ...data, token};
+    res.status(200).json(concatData);
+  } catch (error) {
+    res.status(500).json({message: error.message});
+  }
 })
 
 const addTeacher = asyncHandler(async (req, res) => {
   try {
-    const { teacher } = req.body;
+    const { teacherId } = req.body;
     const studentId = req.params.id;
-    
+    console.log(teacherId)
     if(!studentId) {
       res.status(400);
       throw new Error('Zaloguj się');
     }
-    if(!teacher) {
+    if(!teacherId) {
       res.status(400);
       throw new Error('Wprowadz ID nauczyciela');
     }
     
     const existingStudent = await StudentModel.findById(studentId);
-    console.log(existingStudent.teacher)
     if(!existingStudent) {
       res.status(400);
       throw new Error('Student nie istnieje');
@@ -109,13 +122,30 @@ const addTeacher = asyncHandler(async (req, res) => {
     
 
     // FIXME: Dodawanie nauczyciela do ucznia nie działa
-    const data = await StudentModel.findByIdAndUpdate(studentId, {teacher: teacher}, {new: true, upsert: true})
-    console.log(data.teacher + ' ' + teacher);
+    const data = await StudentModel.findByIdAndUpdate(studentId, {teacher: teacherId}, {new: true, upsert: true})
+    console.log(data.teacher + ' ' + teacherId);
     if(!data) {
       res.status(400);
       throw new Error('Student jest już zapisany u nauczyciela');
     }
-    res.status(200).json({message: 'Nauczyciel dodany do ucznia'});
+
+    const teacherStudents = await TeacherModel.findById(teacherId);
+    const studentsArrayIds = teacherStudents.students.map(id => id.toString());
+    studentsArrayIds.push(studentId)
+    const studentsArray = await StudentModel.find({ _id: { $in: studentsArrayIds } }, '-password -username');
+
+    res.status(200).json(studentsArray);
+  } catch (error) {
+    res.status(500).json({message: error.message});
+  }
+})
+
+const getStudentsByID = asyncHandler(async (req, res) => {
+  try {
+    const { ids } = req.query;
+    const splitIds = ids.split('-');
+    const data = await StudentModel.find({ _id: { $in: splitIds } }, '-password');
+    res.json(data);
   } catch (error) {
     res.status(500).json({message: error.message});
   }
@@ -127,4 +157,4 @@ const generateToken = (id) => {
   });
 }
 
-module.exports = { registerStudent, loginStudent, getMe, addTeacher };
+module.exports = { registerStudent, loginStudent, getMe, addTeacher, getStudentsByID };
