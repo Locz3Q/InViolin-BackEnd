@@ -1,5 +1,12 @@
 const express = require('express');
+const { deleteLesson, getLessons, addLesson } = require('../../controllers/lessonController');
 const router = express.Router(); 
-const LessonModel = require('../models/lessons');
+const { protectBoth, protectTeacher } = require('../../middleware/authMiddleware')
 
-router.get(/)
+router.post('/', protectTeacher, addLesson);
+
+router.get('/', protectBoth, getLessons);
+
+router.delete('/:id', protectTeacher, deleteLesson);
+
+module.exports = router;

@@ -12,11 +12,16 @@ const lessonSchema = new mongoose.Schema({
     require: true,
     ref: "Teachers"
   },
+  topic: {
+    type: String,
+    require: true,
+    def: 'Temat niezdefiniowany'
+  },
   date: {
     type: Schema.Types.Date,
     require: true
   },
-  remote: {
+  isRemote: {
     type: Boolean,
     require: true
   }

@@ -23,6 +23,26 @@ const protect = asyncHandler(async (req, res, next) => {
   }
 })
 
+const protectBoth = asyncHandler(async (req, res, next) => {
+  let token;
+  if(req.headers.authorization && req.headers.authorization.startsWith('Bearer')){
+    try {
+      token = req.headers.authorization.split(' ')[1];
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      req.user = await StudentModel.findById(decoded.id).select('-password') ? await StudentModel.findById(decoded.id).select('-password') : await TeacherModel.findById(decoded.id).select('-password');
+      next();
+    } catch (error) {
+      console.log(error);
+      res.status(401);
+      throw new Error('Not authorized');
+    }
+  }
+  if(!token) {
+    res.status(401);
+    throw new Error('Not authorized, no token');
+  }
+})
+
 const protectTeacher = asyncHandler(async (req, res, next) => {
   let token;
   if(req.headers.authorization && req.headers.authorization.startsWith('Bearer')){
@@ -43,4 +63,4 @@ const protectTeacher = asyncHandler(async (req, res, next) => {
   }
 })
 
-module.exports = { protect, protectTeacher };
+module.exports = { protect, protectTeacher, protectBoth };

@@ -9,7 +9,7 @@ const registerStudent = asyncHandler(async (req, res) => {
   try {
     const { email, username, password, name, surname, level, isTeacher, teacher } = req.body;
     
-    if(!email || !username || !password || !name || !surname || !level) {
+    if(!email || !username || !password || !name || !surname || (level < 0 || level > 10)) {
       res.status(400);
       throw new Error('Wypełnij wszystkie pola!');
     }
@@ -74,7 +74,8 @@ const loginStudent = asyncHandler(async (req, res) => {
         level: student.level,
         token: generateToken(student._id),
         isTeacher: student.isTeacher,
-        teacher: student.teacher
+        teacher: student.teacher,
+        lessons: student.lessons
       });
     } else {
       res.status(400);

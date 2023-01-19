@@ -63,6 +63,7 @@ const registerTeacher = asyncHandler(async (req, res) => {
 const loginTeacher = asyncHandler(async (req, res) => {
   try{
     const {username, password} = req.body;
+    console.log(username)
     const teacher = await TeacherModel.findOne({username});
     if(teacher && (await bcrypt.compare(password, teacher.password))) {
       res.json({
@@ -74,7 +75,8 @@ const loginTeacher = asyncHandler(async (req, res) => {
         level: teacher.level,
         token: generateToken(teacher._id),
         isTeacher: teacher.isTeacher,
-        students: teacher.students
+        students: teacher.students,
+        lessons: teacher.lessons
       });
     } else {
       res.status(400)

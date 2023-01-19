@@ -32,7 +32,7 @@ const deleteQueue = asyncHandler(async (req, res) => {
       res.status(400);
       throw new Error('Dokument nie istnieje');
     }
-    const toRes = await queueModel.find();
+    const toRes = await queueModel.find({teacher: dataToDelete.teacher});
     res.json(toRes);
   } catch (error) {
     res.status(400).json({message: error.message});
@@ -54,11 +54,11 @@ const createqueue = asyncHandler(async (req, res) => {
     const documentExist = await queueModel.findOne({student: student});
     if(!studentExist) {
       res.status(400);
-      throw new Error('student doesn\'t exists');
+      throw new Error('Student nie istnieje');
     }
     if(!teacherExist) {
       res.status(400);
-      throw new Error('teacher doesn\'t exists');
+      throw new Error('Nauczyciel nie istnieje');
     }
     if(documentExist) {
       res.status(400);
