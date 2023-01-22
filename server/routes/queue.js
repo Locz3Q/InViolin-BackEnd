@@ -1,12 +1,12 @@
 const express = require('express');
 const router = express.Router();
-const queueModel = require('../models/queue');
+const { protectBoth, protectTeacher, protect } = require('../../middleware/authMiddleware')
 const { createqueue, getQueue, deleteQueue } = require('../../controllers/queueController')
 
-router.post('/', createqueue);
+router.post('/', protect, createqueue);
 
-router.get('/:id', getQueue);
+router.get('/:id', protectTeacher, getQueue);
 
-router.delete('/:id', deleteQueue);
+router.delete('/:id', protectTeacher, deleteQueue);
 
 module.exports = router;

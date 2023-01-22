@@ -77,30 +77,32 @@ const addLesson = asyncHandler(async (req, res) => {
 const deleteLesson = asyncHandler(async (req, res) => {
   try {
     const id = req.params.id;
-    const dataToDelete = await LessonModel.findByIdAndDelete(id);
-    if(!dataToDelete) {
-      res.status(400);
-      throw new Error('Dokument nie istnieje');
-    }
-    const studentId = dataToDelete.student;
-    const teacherId = dataToDelete.teacher;
+    const data = await LessonModel.findById(id);
+    const studentId = data.student;
+    const teacherId = data.teacher;
 
     const dataTeacher = await TeacherModel.findOneAndUpdate(
       { _id: teacherId },
-      { $pop: { lessons: id } },
+      { $pull: { lessons: id } },
       { new: true }
     );
 
     const dataStudent = await StudentModel.findOneAndUpdate(
       { _id: studentId },
-      { $pop: { lessons: id } },
+      { $pull: { lessons: id } },
       { new: true }
     );
+
+    const dataToDelete = await LessonModel.findByIdAndDelete({_id: id});
+    if(!dataToDelete) {
+      res.status(400);
+      throw new Error('Dokument nie istnieje');
+    }
     if(!dataTeacher || !dataStudent) {
       res.status(400);
       throw new Error('Użytkownik nie istnieje');
     }
-    const toRes = await LessonModel.find();
+    const toRes = await LessonModel.find({ teacher: teacherId });
     res.json(toRes);
   } catch (error) {
     res.status(400).json({message: error.message});

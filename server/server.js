@@ -23,12 +23,6 @@ const database = mongoose.connection;
 
 app.set('port', process.env.PORT || 5000);
 
-setInterval(function(str1, str2) {
-    console.log(str1 + " " + str2);
-}, 60000, "Hello.", "How are you?");
-
-
-
 const server = app.listen(app.get('port'), () => {
     console.log(`Listening on ${ server.address().port }`);
 });

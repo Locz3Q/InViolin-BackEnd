@@ -101,7 +101,6 @@ const addTeacher = asyncHandler(async (req, res) => {
   try {
     const { teacherId } = req.body;
     const studentId = req.params.id;
-    console.log(teacherId)
     if(!studentId) {
       res.status(400);
       throw new Error('Zaloguj się');
@@ -120,11 +119,8 @@ const addTeacher = asyncHandler(async (req, res) => {
       res.status(400);
       throw new Error('Student ma już nauczyciela');
     }
-    
 
-    // FIXME: Dodawanie nauczyciela do ucznia nie działa
     const data = await StudentModel.findByIdAndUpdate(studentId, {teacher: teacherId}, {new: true, upsert: true})
-    console.log(data.teacher + ' ' + teacherId);
     if(!data) {
       res.status(400);
       throw new Error('Student jest już zapisany u nauczyciela');

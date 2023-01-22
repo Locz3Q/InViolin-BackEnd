@@ -63,7 +63,6 @@ const registerTeacher = asyncHandler(async (req, res) => {
 const loginTeacher = asyncHandler(async (req, res) => {
   try{
     const {username, password} = req.body;
-    console.log(username)
     const teacher = await TeacherModel.findOne({username});
     if(teacher && (await bcrypt.compare(password, teacher.password))) {
       res.json({
