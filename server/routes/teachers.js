@@ -12,7 +12,7 @@ router.get('/me', protectTeacher, getMe);
 
 router.get('/', protectBoth, getAll);
 
-router.post('/getTeacher', protectBoth, getByUsername);
+router.post('/getTeacher', getByUsername);
 
 router.put('/addStudent/:id', protectBoth, pushStudent);
 
